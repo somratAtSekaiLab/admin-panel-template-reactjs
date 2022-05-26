@@ -2,7 +2,7 @@
 
 ## Project tools
 
-- Github for code and issues management
+- Github or Jira for code and issues management
 
 ### Branch rules
 
@@ -12,18 +12,9 @@
 
    - in case we are doing tag based release, `main` can be used as stable bleeding edge releasable code.
 
-1. `{type}/{GithubIssueNo}-issue-one-liner` should be the format for branch naming
+1. `{type}/{GithubIssueNo or JiraIssueNo}-issue-one-liner` should be the format for branch naming
    1. See [Type](#Type) section for branch `{type}`.
-   1. Find `{GithubIssueNo}` in Github.
-
-### Pull requests
-
-Pull requests are the only way to propose a value you want to add. Following is a general workflow for submitting any requests.
-
-1. Fork the repository
-1. Clone the fork and create your branch from `main`.
-1. If you've added code that should be tested, Ensure that your code doesn't fail to build
-1. Make pull request to `main` branch
+   1. Find `{GithubIssueNo or JiraIssueNo}` in Github.
 
 #### Type
 
