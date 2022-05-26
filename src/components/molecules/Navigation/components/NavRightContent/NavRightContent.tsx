@@ -2,7 +2,6 @@ import { memo } from "react";
 
 import { LogoutOutlined } from "@ant-design/icons";
 import { Menu, Avatar } from "antd";
-import { useTranslation } from "react-i18next";
 
 import { clearUser } from "@app/features/auth/auth";
 import { getInitials } from "@app/helpers/util.helper";
@@ -10,7 +9,6 @@ import { useAppDispatch, useAppSelector } from "@app/redux/store";
 
 const NavRightContent = memo(() => {
   const dispatch = useAppDispatch();
-  const { t } = useTranslation();
 
   // Using the current user
   const { user } = useAppSelector(state => ({
@@ -37,7 +35,7 @@ const NavRightContent = memo(() => {
           icon={<LogoutOutlined />}
           onClick={handleLogout}
         >
-          {t("auth.logout")}
+          Logout
         </Menu.Item>
       </Menu.SubMenu>
     </Menu>

@@ -1,10 +1,8 @@
 import { DownOutlined } from "@ant-design/icons";
 import { Menu } from "antd";
 import { MenuProps } from "antd/lib/menu";
-import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 
-import { usePermissions } from "@app/features/permissions/permissions";
 import { PRIVATE_LIST } from "@app/routes/routes.config";
 import { RouteGroupDef, RouteItemDef } from "@app/types/route.types";
 
@@ -17,17 +15,9 @@ interface NavMenuProps {
 }
 
 const NavMenu = ({ isSidebar, mode }: NavMenuProps) => {
-  const { t } = useTranslation();
   const location = useLocation();
 
-  const { hasPermissions } = usePermissions();
-
-  const checkPermissions = (item: RouteItemDef | RouteGroupDef) =>
-    "permissions" in item ? hasPermissions(item.permissions) : true;
-
-  const navLinks: RouteItemDef[] = PRIVATE_LIST.filter(
-    route => !route.hideInNavigation && checkPermissions(route)
-  );
+  const navLinks: RouteItemDef[] = PRIVATE_LIST;
 
   const rootPathname = isSidebar
     ? [...location.pathname.split(/(?=\/)/g, 1)]
@@ -60,34 +50,28 @@ const NavMenu = ({ isSidebar, mode }: NavMenuProps) => {
               <div className={styles.subMenuItem}>
                 <span>
                   {navItem.navigationTitle
-                    ? t(navItem.navigationTitle)
+                    ? navItem.navigationTitle
                     : `Missing navigationTitle for "${navItem.id}"`}
                 </span>
                 {!isSidebar && <DownOutlined className={styles.icon} />}
               </div>
             }
           >
-            {navItem.nestedRoutes
-              ?.filter(checkPermissions)
-              .map((subItem: RouteItemDef | RouteGroupDef) =>
+            {navItem.nestedRoutes?.map(
+              (subItem: RouteItemDef | RouteGroupDef) =>
                 "groupTitle" in subItem ? (
-                  <Menu.ItemGroup
-                    key={subItem.id}
-                    title={t(subItem.groupTitle)}
-                  >
-                    {subItem.nestedRoutes
-                      ?.filter(checkPermissions)
-                      .map(subGroupItem => (
-                        <Menu.Item
-                          key={
-                            Array.isArray(subGroupItem.path)
-                              ? subGroupItem.path[0]
-                              : subGroupItem.path
-                          }
-                        >
-                          <NavLink navItem={subGroupItem} />
-                        </Menu.Item>
-                      ))}
+                  <Menu.ItemGroup key={subItem.id} title={subItem.groupTitle}>
+                    {subItem.nestedRoutes?.map(subGroupItem => (
+                      <Menu.Item
+                        key={
+                          Array.isArray(subGroupItem.path)
+                            ? subGroupItem.path[0]
+                            : subGroupItem.path
+                        }
+                      >
+                        <NavLink navItem={subGroupItem} />
+                      </Menu.Item>
+                    ))}
                   </Menu.ItemGroup>
                 ) : (
                   <Menu.Item
@@ -100,7 +84,7 @@ const NavMenu = ({ isSidebar, mode }: NavMenuProps) => {
                     <NavLink navItem={subItem} />
                   </Menu.Item>
                 )
-              )}
+            )}
           </Menu.SubMenu>
         ) : (
           <Menu.Item

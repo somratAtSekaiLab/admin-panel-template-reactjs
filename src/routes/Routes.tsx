@@ -2,8 +2,7 @@ import { ElementType, memo } from "react";
 
 import { Switch, Route, Redirect } from "react-router-dom";
 
-import HeaderLayout from "@app/components/layouts/HeaderLayout/HeaderLayout";
-import { Permission } from "@app/features/permissions/permissions";
+import SidebarLayout from "@app/components/layouts/SidebarLayout/SidebarLayout";
 import { useAppSelector } from "@app/redux/store";
 import {
   RouteComponentDef,
@@ -13,7 +12,6 @@ import {
 
 import LoginRedirect from "./components/LoginRedirect/LoginRedirect";
 import NotFound from "./components/NotFound/NotFound";
-import RestrictAccess from "./components/RestrictAccess/RestrictAccess";
 import { PRIVATE_LIST, PUBLIC_LIST } from "./routes.config";
 
 /**
@@ -21,7 +19,7 @@ import { PRIVATE_LIST, PUBLIC_LIST } from "./routes.config";
  * - HeaderLayout
  * - SidebarLayout
  */
-const DefaultLayout = HeaderLayout;
+const DefaultLayout = SidebarLayout;
 
 const Routes = () => {
   const { isAuthenticated } = useAppSelector(state => ({
@@ -29,7 +27,7 @@ const Routes = () => {
   }));
 
   const routeWrapper = (
-    { id, path, layout, component, permissions }: RouteItemDef,
+    { id, path, layout, component }: RouteItemDef,
     { isProtectedRoute }: RouteWrapperConfigDef | undefined = {}
   ) => {
     const Layout = (layout ?? DefaultLayout) as ElementType;
@@ -48,17 +46,7 @@ const Routes = () => {
             </Layout>
           );
 
-          return (
-            (permissions && (
-              <Permission
-                fallback={<RestrictAccess />}
-                requiredPermissions={permissions}
-              >
-                {renderContent}
-              </Permission>
-            )) ||
-            renderContent
-          );
+          return renderContent;
         }}
       />
     );

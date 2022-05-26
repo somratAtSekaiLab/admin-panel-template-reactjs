@@ -1,6 +1,5 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Card, Col, Input, message, Row } from "antd";
-import { useTranslation } from "react-i18next";
 
 import Button from "@app/components/atoms/Button/Button";
 import Form, { Item, useForm } from "@app/components/atoms/Form/Form";
@@ -17,7 +16,6 @@ import styles from "./LoginScreen.module.scss";
 const DEMO_USER_NAME = "george.bluth@reqres.in";
 
 const LoginScreen = () => {
-  const { t } = useTranslation();
   const [form] = useForm();
   const dispatch = useAppDispatch();
   const loading = useAppSelector(state => state.auth.loading);
@@ -26,26 +24,26 @@ const LoginScreen = () => {
   const handleFinish = async (values: LoginRequestDef) => {
     const response = await dispatch(login(values));
     if (login.fulfilled.match(response)) {
-      message.success(t("auth.messageSuccess"));
+      message.success("Login successful");
     } else {
-      message.error(t("auth.messageError"));
+      message.error("Login failed");
     }
   };
 
   return (
     <Row justify="center" align="middle" className={styles.container}>
       <Col xs={24} sm={12} lg={6}>
-        <Card title={t("auth.loginTitle")}>
+        <Card title="Login">
           <Form form={form} onFinish={handleFinish}>
             <Item
               name="email"
-              label={t("auth.inputEmailLabel")}
+              label="Email"
               rules={[
                 {
                   type: "email",
                   required: true,
                   whitespace: true,
-                  message: t("default.inputErrorRequired"),
+                  message: "Please input your email!",
                 },
               ]}
               initialValue={DEMO_USER_NAME}
@@ -54,12 +52,12 @@ const LoginScreen = () => {
             </Item>
             <Item
               name="password"
-              label={t("auth.inputPasswordLabel")}
+              label="Password"
               rules={[
                 {
                   required: true,
                   whitespace: true,
-                  message: t("default.inputErrorRequired"),
+                  message: "Please input your password!",
                 },
               ]}
             >
@@ -67,7 +65,7 @@ const LoginScreen = () => {
             </Item>
             <Item>
               <Button type="primary" htmlType="submit" loading={loading}>
-                {t("auth.loginButton")}
+                Login
               </Button>
             </Item>
           </Form>

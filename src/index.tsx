@@ -7,7 +7,6 @@ import { Provider } from "react-redux";
 
 import store from "@app/redux/store";
 
-import "@app/features/localization/localization";
 import reportWebVitals from "./reportWebVitals";
 import "./index.scss";
 

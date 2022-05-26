@@ -2,8 +2,6 @@ import { ComponentType, ReactNode } from "react";
 
 import { RouteComponentProps } from "react-router-dom";
 
-import { PermissionEnum } from "@app/features/permissions/permissions";
-
 export type RouteGroupDef = {
   id: string;
   groupTitle: string;
@@ -38,8 +36,6 @@ export type RouteItemDef = {
   nestedRoutes?: Array<RouteItemDef | RouteGroupDef>;
   /** Flag for hide/show in navigation bar */
   hideInNavigation?: boolean;
-  /** The required permissions to view this route (optional) */
-  permissions?: PermissionEnum[];
 };
 
 export type RouteWrapperConfigDef = {
