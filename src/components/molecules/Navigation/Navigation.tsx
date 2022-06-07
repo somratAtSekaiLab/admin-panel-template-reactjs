@@ -3,6 +3,8 @@ import { memo } from "react";
 import { Layout, Row, Col } from "antd";
 import cx from "classnames";
 
+import useSidebarLayout from "@app/components/layouts/SidebarLayout/hooks/useSidebarLayout";
+
 import styles from "./Navigation.module.scss";
 import NavLeftContent from "./components/NavLeftContent/NavLeftContent";
 import NavRightContent from "./components/NavRightContent/NavRightContent";
@@ -15,9 +17,16 @@ type NavigationProps = {
 };
 
 const Navigation = memo(({ sidebar, sticky = false }: NavigationProps) => {
+  const { isSidebarCollapsed } = useSidebarLayout();
+
   if (sidebar) {
     return (
-      <Sider className={styles.sidebar}>
+      <Sider
+        className={styles.sidebar}
+        trigger={null}
+        collapsible
+        collapsed={isSidebarCollapsed}
+      >
         <NavLeftContent mode="inline" />
       </Sider>
     );

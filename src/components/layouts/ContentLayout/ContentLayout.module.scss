@@ -19,17 +19,33 @@
 
     .ant-page-header-heading {
       flex-wrap: wrap;
+      order: 2;
     }
     .ant-page-header-heading-title {
       white-space: normal;
+      margin-left: 0.75rem;
     }
     .ant-page-header-heading-extra {
       margin-left: auto;
     }
+
+    display: flex;
+    position: sticky;
+    top: 0;
   }
 }
 
 .pageHeader,
 .filters {
   margin-bottom: $spacing-6;
+}
+
+.trigger {
+  font-size: 18px;
+  cursor: pointer;
+  transition: color 0.3s;
+
+  &:hover {
+    color: #1890ff;
+  }
 }

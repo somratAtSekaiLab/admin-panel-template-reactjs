@@ -1,10 +1,12 @@
 import { memo, ReactNode } from "react";
 
+import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 import { Layout, PageHeader, PageHeaderProps } from "antd";
 import { Route } from "antd/lib/breadcrumb/Breadcrumb";
 import cx from "classnames";
 import { Link } from "react-router-dom";
 
+import useSidebarLayout from "../SidebarLayout/hooks/useSidebarLayout";
 import styles from "./ContentLayout.module.scss";
 
 const { Content } = Layout;
@@ -18,6 +20,8 @@ type ContentLayoutProps = {
 
 const ContentLayout = memo(
   ({ header, filters, children, noContentStyle }: ContentLayoutProps) => {
+    const { isSidebarCollapsed, setIsSidebarCollapsed } = useSidebarLayout();
+
     // Add custom breadcrumb item render to support Link from react-router-dom
     const renderBreadcrumbItem = (
       route: Route,
@@ -32,6 +36,19 @@ const ContentLayout = memo(
       );
     };
 
+    const renderSidebarTrigger = () => {
+      const props = {
+        onClick: () => setIsSidebarCollapsed?.(prevState => !prevState),
+        className: styles.trigger,
+      };
+
+      return isSidebarCollapsed ? (
+        <MenuUnfoldOutlined {...props} />
+      ) : (
+        <MenuFoldOutlined {...props} />
+      );
+    };
+
     return (
       <Layout className={styles.container}>
         <PageHeader
@@ -42,7 +59,9 @@ const ContentLayout = memo(
             ...header.breadcrumb,
           }}
           className={cx(styles.pageHeader, header.className)}
-        />
+        >
+          {renderSidebarTrigger()}
+        </PageHeader>
         {filters && (
           <div className={cx(styles.filters, styles.content)}>{filters}</div>
         )}

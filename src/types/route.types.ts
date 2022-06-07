@@ -1,6 +1,8 @@
-import { ComponentType, ReactNode } from "react";
+import { ComponentType } from "react";
 
 import { RouteComponentProps } from "react-router-dom";
+
+import { LayoutTypeEnum } from "@app/constants/layout.constants";
 
 export type RouteGroupDef = {
   id: string;
@@ -31,11 +33,13 @@ export type RouteItemDef = {
    */
   component: RouteComponentDef;
   /** Layout used for this route */
-  layout?: ReactNode;
+  layoutType?: LayoutTypeEnum;
   /** Nested Routes either by array of routes or group of routes */
   nestedRoutes?: Array<RouteItemDef | RouteGroupDef>;
   /** Flag for hide/show in navigation bar */
   hideInNavigation?: boolean;
+  /** Sidebar icon */
+  sidebarIcon?: ComponentType;
 };
 
 export type RouteWrapperConfigDef = {

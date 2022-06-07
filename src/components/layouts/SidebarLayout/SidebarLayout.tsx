@@ -5,6 +5,7 @@ import { Layout } from "antd";
 import Navigation from "@app/components/molecules/Navigation/Navigation";
 
 import styles from "./SidebarLayout.module.scss";
+import { SidebarLayoutProvider } from "./components/SidebarLayoutProvider/SidebarLayoutProvider";
 
 const { Content } = Layout;
 
@@ -14,12 +15,12 @@ type SidebarLayoutProps = {
 
 const SidebarLayout = memo(({ children }: SidebarLayoutProps) => {
   return (
-    <Layout>
+    <SidebarLayoutProvider>
       <Navigation sidebar />
       <Layout className={styles.pushContent}>
         <Content>{children}</Content>
       </Layout>
-    </Layout>
+    </SidebarLayoutProvider>
   );
 });
 

@@ -1,3 +1,5 @@
+import { HomeOutlined } from "@ant-design/icons";
+
 import { RouteItemDef } from "@app/types/route.types";
 
 import { HomePathsEnum } from "../constants/home.paths";
@@ -8,6 +10,7 @@ const HOME_SCREEN: RouteItemDef = {
   path: HomePathsEnum.HOME,
   navigationTitle: "Home",
   component: HomeScreen,
+  sidebarIcon: HomeOutlined,
 };
 
 export const HOME_ROUTES = [HOME_SCREEN];

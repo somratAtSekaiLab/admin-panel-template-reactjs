@@ -1,4 +1,4 @@
-import BlankLayout from "@app/components/layouts/BlankLayout/BlankLayout";
+import { LayoutTypeEnum } from "@app/constants/layout.constants";
 import { RouteItemDef } from "@app/types/route.types";
 
 import { AuthPathsEnum } from "../constants/auth.paths";
@@ -9,7 +9,7 @@ const LOGIN_SCREEN: RouteItemDef = {
   path: AuthPathsEnum.LOGIN,
   component: LoginScreen,
   navigationTitle: "auth.loginTitle",
-  layout: BlankLayout,
+  layoutType: LayoutTypeEnum.BLANK,
 };
 
 export const AUTH_ROUTES = [LOGIN_SCREEN];

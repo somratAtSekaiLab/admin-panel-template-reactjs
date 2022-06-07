@@ -10,7 +10,7 @@ interface Props {
 const BrowserTitle = ({ title }: Props) => {
   return (
     <Helmet>
-      <title>{(!!title && `${title} | `) || "Bhumijo Admin panel"}</title>
+      <title>{(!!title && `${title} | `) || "ML Admin panel"}</title>
     </Helmet>
   );
 };

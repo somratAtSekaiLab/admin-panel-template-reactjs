@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-import { Input, InputProps } from "antd";
+import { Input, InputProps, InputRef } from "antd";
 import _debounce from "lodash/debounce";
 
 interface DebouncedInputProps extends InputProps {
@@ -18,12 +18,12 @@ const DebouncedInput = ({
   wait = 500,
   ...props
 }: DebouncedInputProps) => {
-  const inputRef = useRef<Input>(null);
+  const inputRef = useRef<InputRef>(null);
 
   useEffect(() => {
     // This will allow parent to update value
-    if (inputRef.current) {
-      inputRef.current.setValue(value as string);
+    if (inputRef.current?.input) {
+      inputRef.current.input.value = String(value);
     }
   }, [value]);
 

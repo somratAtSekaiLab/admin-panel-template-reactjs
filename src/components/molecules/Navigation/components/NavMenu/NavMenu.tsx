@@ -1,13 +1,15 @@
-import { DownOutlined } from "@ant-design/icons";
+import {
+  // DownOutlined,
+  UploadOutlined,
+  UserOutlined,
+  VideoCameraOutlined,
+} from "@ant-design/icons";
 import { Menu } from "antd";
 import { MenuProps } from "antd/lib/menu";
-import { useLocation } from "react-router-dom";
+import { ItemType } from "antd/lib/menu/hooks/useItems";
+import { useHistory, useLocation } from "react-router-dom";
 
 import { PRIVATE_LIST } from "@app/routes/routes.config";
-import { RouteGroupDef, RouteItemDef } from "@app/types/route.types";
-
-import NavLink from "../NavLink/NavLink";
-import styles from "./NavMenu.module.scss";
 
 interface NavMenuProps {
   isSidebar?: boolean;
@@ -16,8 +18,76 @@ interface NavMenuProps {
 
 const NavMenu = ({ isSidebar, mode }: NavMenuProps) => {
   const location = useLocation();
+  const history = useHistory();
 
-  const navLinks: RouteItemDef[] = PRIVATE_LIST;
+  const items: ItemType[] = [
+    ...PRIVATE_LIST.map(item => {
+      const Icon = item.sidebarIcon;
+      const path = Array.isArray(item.path) ? item.path[0] : item.path;
+
+      return {
+        key: path,
+        icon: Icon && <Icon />,
+        label: item.navigationTitle,
+        onClick: () => {
+          history.push(path);
+        },
+      };
+    }),
+
+    /* For scrolling demo */
+    {
+      key: "1",
+      icon: <UserOutlined />,
+      label: "Group 1",
+      children: [
+        {
+          key: "2",
+          icon: <VideoCameraOutlined />,
+          label: "nav 2",
+        },
+        {
+          key: "3",
+          icon: <UploadOutlined />,
+          label: "nav 3",
+        },
+      ],
+    },
+    {
+      key: "4",
+      icon: <UserOutlined />,
+      label: "Group 2",
+      children: [
+        {
+          key: "5",
+          icon: <VideoCameraOutlined />,
+          label: "nav 2",
+        },
+        {
+          key: "6",
+          icon: <UploadOutlined />,
+          label: "nav 3",
+        },
+      ],
+    },
+    {
+      key: "8",
+      icon: <VideoCameraOutlined />,
+      label: "Group 3",
+      children: [
+        {
+          key: "9",
+          icon: <UploadOutlined />,
+          label: "nav 3",
+        },
+        {
+          key: "10",
+          icon: <UserOutlined />,
+          label: "nav 1",
+        },
+      ],
+    },
+  ];
 
   const rootPathname = isSidebar
     ? [...location.pathname.split(/(?=\/)/g, 1)]
@@ -25,7 +95,7 @@ const NavMenu = ({ isSidebar, mode }: NavMenuProps) => {
 
   const highlightMenu = [
     ...location.pathname.split(/(?=\/)/g, 1), // Highlight root url
-    location.pathname.substr(0, location.pathname.lastIndexOf("/")), // Highlight parent url
+    location.pathname.substring(0, location.pathname.lastIndexOf("/")), // Highlight parent url
     location.pathname, // Highlight entire url
   ];
 
@@ -37,64 +107,11 @@ const NavMenu = ({ isSidebar, mode }: NavMenuProps) => {
   return (
     <Menu
       mode={mode}
-      selectedKeys={highlightMenu}
       defaultOpenKeys={rootPathname}
+      selectedKeys={highlightMenu}
       theme="dark"
-    >
-      {navLinks.map(navItem =>
-        navItem.nestedRoutes?.length ? (
-          <Menu.SubMenu
-            key={Array.isArray(navItem.path) ? navItem.path[0] : navItem.path}
-            popupOffset={[-16, 7]}
-            title={
-              <div className={styles.subMenuItem}>
-                <span>
-                  {navItem.navigationTitle
-                    ? navItem.navigationTitle
-                    : `Missing navigationTitle for "${navItem.id}"`}
-                </span>
-                {!isSidebar && <DownOutlined className={styles.icon} />}
-              </div>
-            }
-          >
-            {navItem.nestedRoutes?.map(
-              (subItem: RouteItemDef | RouteGroupDef) =>
-                "groupTitle" in subItem ? (
-                  <Menu.ItemGroup key={subItem.id} title={subItem.groupTitle}>
-                    {subItem.nestedRoutes?.map(subGroupItem => (
-                      <Menu.Item
-                        key={
-                          Array.isArray(subGroupItem.path)
-                            ? subGroupItem.path[0]
-                            : subGroupItem.path
-                        }
-                      >
-                        <NavLink navItem={subGroupItem} />
-                      </Menu.Item>
-                    ))}
-                  </Menu.ItemGroup>
-                ) : (
-                  <Menu.Item
-                    key={
-                      Array.isArray(subItem.path)
-                        ? subItem.path[0]
-                        : subItem.path
-                    }
-                  >
-                    <NavLink navItem={subItem} />
-                  </Menu.Item>
-                )
-            )}
-          </Menu.SubMenu>
-        ) : (
-          <Menu.Item
-            key={Array.isArray(navItem.path) ? navItem.path[0] : navItem.path}
-          >
-            <NavLink navItem={navItem} />
-          </Menu.Item>
-        )
-      )}
-    </Menu>
+      items={items}
+    />
   );
 };
 

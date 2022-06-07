@@ -1,8 +1,10 @@
-import { ElementType, memo } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Switch, Route, Redirect, useLocation } from "react-router-dom";
 
+import BlankLayout from "@app/components/layouts/BlankLayout/BlankLayout";
 import SidebarLayout from "@app/components/layouts/SidebarLayout/SidebarLayout";
+import { LayoutTypeEnum } from "@app/constants/layout.constants";
 import { useAppSelector } from "@app/redux/store";
 import {
   RouteComponentDef,
@@ -15,22 +17,45 @@ import NotFound from "./components/NotFound/NotFound";
 import { PRIVATE_LIST, PUBLIC_LIST } from "./routes.config";
 
 /**
- * Change the default layout to:
- * - HeaderLayout
- * - SidebarLayout
+ * Change the default layout type to:
+ * - LayoutTypeEnum.SIDEBAR
+ * - LayoutTypeEnum.BLANK
  */
-const DefaultLayout = SidebarLayout;
+const defaultLayoutType = LayoutTypeEnum.SIDEBAR;
+
+const ROUTE_LIST = [...PRIVATE_LIST, ...PUBLIC_LIST];
 
 const Routes = () => {
   const { isAuthenticated } = useAppSelector(state => ({
     isAuthenticated: state.auth?.isAuthenticated,
   }));
+  const location = useLocation();
+  const [currentLayoutType, setCurrentLayoutType] = useState<
+    LayoutTypeEnum | undefined
+  >(defaultLayoutType);
+
+  const parseLayoutFromRoute = useCallback(() => {
+    ROUTE_LIST.some(route => {
+      if (route.path === location.pathname) {
+        setCurrentLayoutType(route.layoutType);
+
+        return true;
+      }
+
+      setCurrentLayoutType(defaultLayoutType); // Set layout type if no route matched
+
+      return false;
+    });
+  }, [location.pathname]);
+
+  useEffect(() => {
+    parseLayoutFromRoute();
+  }, [parseLayoutFromRoute]);
 
   const routeWrapper = (
-    { id, path, layout, component }: RouteItemDef,
+    { id, path, component }: RouteItemDef,
     { isProtectedRoute }: RouteWrapperConfigDef | undefined = {}
   ) => {
-    const Layout = (layout ?? DefaultLayout) as ElementType;
     return (
       <Route
         key={id}
@@ -39,36 +64,30 @@ const Routes = () => {
           if (isProtectedRoute && !isAuthenticated) {
             return <LoginRedirect />;
           }
-          const Component = component as RouteComponentDef;
-          const renderContent = (
-            <Layout>
-              <Component {...routeProps} />
-            </Layout>
-          );
 
-          return renderContent;
+          const Component = component as RouteComponentDef;
+
+          return <Component {...routeProps} />;
         }}
       />
     );
   };
 
-  return (
-    <Switch>
-      <Redirect exact from="/" to="/home" />
+  const CurrentLayout =
+    currentLayoutType === LayoutTypeEnum.BLANK ? BlankLayout : SidebarLayout;
 
-      {PRIVATE_LIST.map(route =>
-        routeWrapper(route, { isProtectedRoute: true })
-      )}
-      {PUBLIC_LIST.map(route => routeWrapper(route))}
-      <Route
-        path="*"
-        render={() => (
-          <DefaultLayout>
-            <NotFound />
-          </DefaultLayout>
+  return (
+    <CurrentLayout>
+      <Switch>
+        <Redirect exact from="/" to="/home" />
+
+        {PRIVATE_LIST.map(route =>
+          routeWrapper(route, { isProtectedRoute: true })
         )}
-      />
-    </Switch>
+        {PUBLIC_LIST.map(route => routeWrapper(route))}
+        <Route path="*" render={() => <NotFound />} />
+      </Switch>
+    </CurrentLayout>
   );
 };
 
